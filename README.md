@@ -8,6 +8,8 @@ For example, if the word frozen is mentioned, it's response randomness is set to
 ![Alt_text](https://github.com/ellemcfarlane/GPT2Bot/blob/master/screenshots/gpt2botscreenshot.png)
 ![Alt_text](https://github.com/ellemcfarlane/GPT2Bot/blob/master/screenshots/gpt2bottweetsceenshot.png)
 
-## Basic Usage
-Ensure to have the basic requirements via:
-pipenv install
+### Basic Usage
+* Ensure to have the basic requirements via: pipenv install
+* run bot.py -o -s from shell
+    * include -o to respond to old tweets the bot did not see while offline 
+    * include -s to run bot "live" to respond to new incoming tweets
