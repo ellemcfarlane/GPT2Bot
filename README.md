@@ -1,5 +1,5 @@
 # GPT-2 Bot
-Interact with this bot on Twitter [here](https://twitter.com/Gpt2B). It uses GPT-2 to formulate response.
+Interact with this bot on Twitter [here](https://twitter.com/Gpt2B). It uses OpenAI's 124M GPT-2 model to formulate responses.
 
 The randomness of its response is influenced by certain, secret words...
 

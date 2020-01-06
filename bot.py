@@ -6,7 +6,7 @@ import string
 import gpt_2_simple as gpt2
 
 """
-This Twitter bot uses OpenAI's GPT-2 text generation model to respond to users. If a user tweets it certain key words,
+This Twitter bot uses OpenAI's 124M GPT-2 model to respond to users. If a user tweets it certain key words,
 the randomness in its response will be reflected. For example, if the word frozen is mentioned, it's response randomness
 is set to 0 (min), and if coffee is mentioned, it is set to 1.0 (max).
 """
@@ -52,8 +52,9 @@ class GPT2Bot:
 
     def reply_all(self, since_id=None):
         """
-        :param since_id: returns mentions with an ID greater (more recent) than the specified ID.
+        replies to mentions with an ID greater (more recent) than the specified ID.
         Default id is that of bot's most recent tweet.
+        :param since_id: int for tweet ID
         """
         # if no id specified, reply to all mentions after most recent tweet by bot
         if not since_id:
@@ -72,6 +73,26 @@ class GPT2Bot:
             if first_word != '@' + self.api.me().screen_name.lower():
                 continue
             self.__respond__(mention)
+
+    def trend_tweet(self):
+        # forms message based on number one trend near NYC and tweets it
+
+        # get top trends for NYC
+        trends = self.api.trends_place(2459115)[0]['trends']
+        # sort by most popular
+        trends.sort(key=lambda trend: int(trend['tweet_volume'] or 0), reverse=True)
+        top_trend = trends[0]['name'].replace('#', '') + " is"
+        # create GPT-2 response mentioning trend
+        message = self.form_response(top_trend)
+        # clean message for status
+        status = self.text_proc.clean_text(message, length=281, delete="\n\n", truncate=True)
+
+        # tweet about top trend
+        self.api.update_status(
+            status=status
+        )
+
+        print("tweeted about " + top_trend)
 
     def __respond__(self, status):
         # responds to tweet mentioning the bot
@@ -97,7 +118,7 @@ class GPT2Bot:
         # formulate response
         response = '@' + status.author.screen_name + ' ' + self.form_response(message, temperature=boltzmann)
         # clean response
-        response = self.text_proc.clean_text(response, length=200, delete="\n\n", truncate=True)
+        response = self.text_proc.clean_text(response, length=281, delete="\n\n", truncate=True)
 
         # respond to the tweet
         self.api.update_status(
@@ -134,7 +155,7 @@ class MyStreamListener(tweepy.StreamListener):
         self.bot = bot
 
     # this function will be called any time a tweet comes in
-    # that contains words from the array created above
+    # that contains words from bot.trigger_words()
     def on_status(self, status):
         self.bot.__respond__(status)
 
@@ -146,26 +167,26 @@ class TextProcessor:
         :param length: desired length to shorten text to
         :param delete: characters to remove from text
         :param truncate: if set to True, removes trailing comma and other preposition-like words from end of text
-        :return: newText, a string representing the processed text
+        :return: new_text, a string representing the processed text
         """
-        newText = text
-        truncateWords = ['and', 'but', 'the', 'is']
+        new_text = text
+        truncate_words = ['and', 'but', 'the', 'is']
         # replace word given by delete
         if delete != '':
             text.replace(delete, '')
-        # remove trailing commas and words in truncateWords from the end
+        # remove trailing commas and words in truncate_words from the end
         if truncate:
-            newText = text.split()
-            if newText[-1] in truncateWords:
-                del newText[-1]
-            if newText[-1][-1] == ',':
-                newText[-1] = newText[-1].replace(',', '.')
-            newText = " ".join(newText)
+            new_text = text.split()
+            if new_text[-1] in truncate_words:
+                del new_text[-1]
+            if new_text[-1][-1] == ',':
+                new_text[-1] = new_text[-1].replace(',', '.')
+            new_text = " ".join(new_text)
         # shorten sentence if possible
-        if length < len(newText):
-            newText = newText[:length - 1]
-            print('truncated response length to: ', len(newText))
-        return newText
+        if length < len(new_text):
+            new_text = new_text[:length - 1]
+            print('truncated response length to: ', len(new_text))
+        return new_text
 
     def decipher(self, text, code):
         """
@@ -198,19 +219,24 @@ class TextProcessor:
             return avg
 
 if __name__ == '__main__':
-    mybot = GPT2Bot()
-
     parser = argparse.ArgumentParser(description="To stream or not to stream")
-    parser.add_argument("-o", help="Set to True if want bot to "
-                                        "respond to previous unanswered tweets", action="store_true")
-    parser.add_argument("-s", help="Set to True if want bot to "
-                                        "listen and respond to live tweets", action="store_true")
+    parser.add_argument("-o", help="Set if want bot to respond to previous unanswered tweets", action="store_true")
+    parser.add_argument("-t", help="Set if want bot to tweet about top trend near NYC", action="store_true")
+    parser.add_argument("-s", help="Set if want bot to listen and respond to live tweets", action="store_true")
     args = parser.parse_args()
     old_resp = args.o
+    top_trend = args.t
     to_stream = args.s
+
+    mybot = GPT2Bot()
 
     if old_resp:
         mybot.reply_all()
+    if top_trend:
+        mybot.trend_tweet()
     if to_stream:
         mybot.stream_response()
+
+
+
 
