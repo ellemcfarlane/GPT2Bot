@@ -12,4 +12,5 @@ For example, if the word frozen is mentioned, it's response randomness is set to
 * Ensure to have the basic requirements via: pipenv install
 * run bot.py -o -s from shell
     * include -o to respond to old tweets the bot did not see while offline 
+    * include -t to tweet about top trend near NYC
     * include -s to run bot "live" to respond to new incoming tweets
