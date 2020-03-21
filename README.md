@@ -3,7 +3,7 @@ Interact with this bot on Twitter [here](https://twitter.com/Gpt2B). It uses Ope
 
 The randomness of its response is influenced by certain, secret words...
 
-For example, if the word frozen is mentioned, it's response randomness is set to 0 (min), and if coffee is mentioned, it is set to 1.0 (max).
+For example, if the word frozen is mentioned, its response randomness is set to 0 (min), and if coffee is mentioned, it is set to 1.0 (max).
 
 ![Alt_text](screenshots/gpt2botscreenshot.png)
 ![Alt_text](screenshots/gpt2bottweetsceenshot.png)
