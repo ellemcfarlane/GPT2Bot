@@ -34,7 +34,7 @@ class GPT2Bot:
         self.trigger_words = ['@' + handle]  # respond to @mentions]
 
         # dictionary mapping certain words to values of randomness, which will influence response randomness
-        self.boltzmann_code = {'drowsy': .2, 'frozen': 0.0, 'speed': 1.0, 'coffee': .8, 'fire': .9}
+        self.boltzmann_code = {'frozen': 0.0, 'drowsy': .2, 'tea': .6, 'coffee': .8, 'fire': .9, 'burning': 1.0}
 
         # cleans bot's responses
         self.text_proc = TextProcessor()
@@ -142,6 +142,15 @@ class GPT2Bot:
                                  include_prefix=True
                                  )[0]
         return response
+    
+    def basic_test(self, message):
+        # generate response to given message with default settings
+        boltzmann = self.text_proc.decipher(message, self.boltzmann_code)
+        # formulate response
+        response = self.form_response(message, temperature=boltzmann)
+        # clean response
+        response = self.text_proc.clean_text(response, length=281, delete="\n\n", truncate=True)
+        return response
 
 # override the default listener to add code to on_status
 class MyStreamListener(tweepy.StreamListener):
@@ -203,13 +212,11 @@ class TextProcessor:
         text = text.translate(str.maketrans('', '', string.punctuation))
         # get words to search for in text
         secret_words = code.keys()
-        # set randomness for first word to .3, and second to 1
+        # check if text contains any secret words and collect their boltzman values
         boltzmanns = []
-        # check if text contains any secret words and set randomness b1 and b2 accordingly
         for word in text.split():
             if word in secret_words:
                 boltzmanns.append(code[word])
-
         # return None if no code words in text
         if len(boltzmanns) == 0:
             return None
