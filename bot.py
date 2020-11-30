@@ -220,16 +220,23 @@ class TextProcessor:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="To stream or not to stream")
-    parser.add_argument("-o", help="Set if want bot to respond to previous unanswered tweets", action="store_true")
-    parser.add_argument("-t", help="Set if want bot to tweet about top trend near NYC", action="store_true")
-    parser.add_argument("-s", help="Set if want bot to listen and respond to live tweets", action="store_true")
+    parser.add_argument("-u", help="Set if want bot to respond to previous unanswered tweets", action="store_true")
+    parser.add_argument("-n", help="Set if want bot to tweet about top trend near NYC", action="store_true")
+    parser.add_argument("-l", help="Set if want bot to listen and respond to live tweets", action="store_true")
+    parser.add_argument("-t","--test", nargs="+", help="Test bot's response to given phrase")
     args = parser.parse_args()
-    old_resp = args.o
-    top_trend = args.t
-    to_stream = args.s
-
+    print(args)
+    old_resp = args.u
+    top_trend = args.n
+    to_stream = args.l
+    test_words = args.test
+   
     mybot = GPT2Bot()
 
+    if test_words:
+        test_phrase = "".join(test_words)
+        response = mybot.basic_test(test_phrase)
+        print(response)
     if old_resp:
         mybot.reply_all()
     if top_trend:
