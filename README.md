@@ -11,7 +11,7 @@ For example, if the word frozen is mentioned, its response randomness is set to 
 ### Basic Usage from Terminal
 * Installation:
    * use python 3.7
-   * ```pip install requirements.txt```
+   * ```pip install -r requirements.txt```
 
 * run:  
     ```python bot.py -{flags}```
