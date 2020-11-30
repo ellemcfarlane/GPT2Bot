@@ -13,8 +13,8 @@ For example, if the word frozen is mentioned, its response randomness is set to 
    * use python 3.7
    * ```pip install requirements.txt```
 
-* run:
-    ```python bot.py -{flags}```
+* run:  
+    ```python bot.py -{flags}```  
     flags options  
     * -u to respond to old tweets the bot did not see while offline 
     * -n to tweet about top trend near NYC
