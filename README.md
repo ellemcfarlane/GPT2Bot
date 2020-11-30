@@ -13,8 +13,9 @@ For example, if the word frozen is mentioned, its response randomness is set to 
    * use python 3.7
    * ```pip install -r requirements.txt```
 
-* run:  
-    ```python bot.py -{flags}```
+* Usage:
+    * make a twitter dev account, set environment variables per secret.py file  
+    * run: ```python bot.py -{flags}```
     * -u to respond to old tweets the bot did not see while offline 
     * -n to tweet about top trend near NYC
     * -l to run bot "live" to respond to new incoming tweets
