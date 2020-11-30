@@ -14,8 +14,7 @@ For example, if the word frozen is mentioned, its response randomness is set to 
    * ```pip install requirements.txt```
 
 * run:  
-    ```python bot.py -{flags}```  
-    flags options  
+    ```python bot.py -{flags}```
     * -u to respond to old tweets the bot did not see while offline 
     * -n to tweet about top trend near NYC
     * -l to run bot "live" to respond to new incoming tweets
