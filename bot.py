@@ -24,7 +24,7 @@ class GPT2Bot:
             handle
         ))
 
-        # set GTP-2 model
+        # set GPT-2 model
         self.model_name = "124M"
         # initiate session
         self.sess = gpt2.start_tf_sess()
