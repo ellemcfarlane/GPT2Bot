@@ -179,18 +179,13 @@ class TextProcessor:
         :return: new_text, a string representing the processed text
         """
         new_text = text
-        truncate_words = ['and', 'but', 'the', 'is']
         # replace word given by delete
         if delete != '':
             text.replace(delete, '')
-        # remove trailing commas and words in truncate_words from the end
-        if truncate:
-            new_text = text.split()
-            if new_text[-1] in truncate_words:
-                del new_text[-1]
-            if new_text[-1][-1] == ',':
-                new_text[-1] = new_text[-1].replace(',', '.')
-            new_text = " ".join(new_text)
+        # shorten response to last full sentence (ending with period)
+        idx_last_period = new_text.rfind(".")
+        if idx_last_period != -1: # period found
+            new_text = new_text[:idx_last_period+1]
         # shorten sentence if possible
         if length < len(new_text):
             new_text = new_text[:length - 1]
@@ -230,7 +225,7 @@ if __name__ == '__main__':
     parser.add_argument("-u", help="Set if want bot to respond to previous unanswered tweets", action="store_true")
     parser.add_argument("-n", help="Set if want bot to tweet about top trend near NYC", action="store_true")
     parser.add_argument("-l", help="Set if want bot to listen and respond to live tweets", action="store_true")
-    parser.add_argument("-t","--test", nargs="+", help="Test bot's response to given phrase")
+    parser.add_argument("-t","--test", nargs="+", help="Test bot's response to given message")
     args = parser.parse_args()
     print(args)
     old_resp = args.u
@@ -245,6 +240,7 @@ if __name__ == '__main__':
         response = mybot.basic_test(test_phrase)
         print(response)
     if old_resp:
+        # since_id = tweet id found after /status/ in url
         mybot.reply_all()
     if top_trend:
         mybot.trend_tweet()
