@@ -227,7 +227,6 @@ if __name__ == '__main__':
     parser.add_argument("-l", help="Set if want bot to listen and respond to live tweets", action="store_true")
     parser.add_argument("-t","--test", nargs="+", help="Test bot's response to given message")
     args = parser.parse_args()
-    print(args)
     old_resp = args.u
     top_trend = args.n
     to_stream = args.l
