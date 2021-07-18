@@ -12,7 +12,14 @@ is set to 0 (min), and if coffee is mentioned, it is set to 1.0 (max).
 """
 # Bot class
 class GPT2Bot:
+    def __has_all_credentials(self):
+        return consumer_key and consumer_secret and access_token and access_secret and handle
+
     def __init__(self):
+        if not self.__has_all_credentials():
+            print("Missing twitter api credential. Make sure to set all credentials in the environment.")
+            return
+
         # get authentication info
         self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         self.auth.set_access_token(access_token, access_secret)
