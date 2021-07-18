@@ -229,29 +229,32 @@ class TextProcessor:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="To stream or not to stream")
-    parser.add_argument("-u", help="Set if want bot to respond to previous unanswered tweets", action="store_true")
-    parser.add_argument("-n", help="Set if want bot to tweet about top trend near NYC", action="store_true")
-    parser.add_argument("-l", help="Set if want bot to listen and respond to live tweets", action="store_true")
-    parser.add_argument("-t","--test", nargs="+", help="Test bot's response to given message")
+    parser.add_argument("-u", help="respond to previous unanswered tweets", action="store_true", default=False)
+    parser.add_argument("-n", help="tweet about top trend near NYC", action="store_true", default=False)
+    parser.add_argument("-l", help="listen and respond to live tweets", action="store_true", default=False)
+    parser.add_argument("-t","--test", nargs="+", help="test response to given message. Does not send tweet.", default=[])
     args = parser.parse_args()
     old_resp = args.u
     top_trend = args.n
     to_stream = args.l
     test_words = args.test
    
-    mybot = GPT2Bot()
-
-    if test_words:
-        test_phrase = "".join(test_words)
-        response = mybot.basic_test(test_phrase)
-        print(response)
-    if old_resp:
-        # since_id = tweet id found after /status/ in url
-        mybot.reply_all()
-    if top_trend:
-        mybot.trend_tweet()
-    if to_stream:
-        mybot.stream_response()
+    all_flags_false = not(old_resp or top_trend or to_stream or test_words)
+    if all_flags_false:
+        print("Please give an argument to run the bot. Run -h to see options.")
+    else:
+        mybot = GPT2Bot()
+        if test_words:
+            test_phrase = "".join(test_words)
+            response = mybot.basic_test(test_phrase)
+            print(response)
+        if old_resp:
+            # since_id = tweet id found after /status/ in url
+            mybot.reply_all()
+        if top_trend:
+            mybot.trend_tweet()
+        if to_stream:
+            mybot.stream_response()
 
 
 
