@@ -156,7 +156,7 @@ class GPT2Bot:
         # formulate response
         response = self.form_response(message, temperature=boltzmann)
         # clean response
-        response = self.text_proc.clean_text(response, length=281, delete="\n\n", truncate=True)
+        response = self.text_proc.clean_text(response, length=281, chars_to_remove=['"'], truncate=True)
         return response
 
 # override the default listener to add code to on_status
@@ -176,27 +176,33 @@ class MyStreamListener(tweepy.StreamListener):
         self.bot.__respond__(status)
 
 class TextProcessor:
-    def clean_text(self, text, length=False, delete='', truncate=False):
+    def clean_text(self, text, length=False, chars_to_remove=None, truncate=False):
         """
         Processes given text string according to other parameters
         :param text: string to be processed
         :param length: desired length to shorten text to
-        :param delete: characters to remove from text
+        :param chars_to_remove: list of characters to remove from text
         :param truncate: if set to True, removes trailing comma and other preposition-like words from end of text
         :return: new_text, a string representing the processed text
         """
         new_text = text
-        # replace word given by delete
-        if delete != '':
-            text.replace(delete, '')
+        # remove given chars
+        for char in chars_to_remove:
+            new_text = new_text.replace(char, '')
+
+        # replace double lines with single lines
+        new_text = new_text.replace('\n\n', '\n')
+
         # shorten response to last full sentence (ending with period)
         idx_last_period = new_text.rfind(".")
         if idx_last_period != -1: # period found
             new_text = new_text[:idx_last_period+1]
+
         # shorten sentence if possible
         if length < len(new_text):
             new_text = new_text[:length - 1]
             print('truncated response length to: ', len(new_text))
+            
         return new_text
 
     def decipher(self, text, code):
