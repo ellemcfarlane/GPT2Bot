@@ -61,7 +61,7 @@ class GPT2Bot:
         """
         replies to mentions with an ID greater (more recent) than the specified ID.
         Default id is that of bot's most recent tweet.
-        :param since_id: int for tweet ID
+        :param since_id: int for tweet ID (found after /status/ in url)
         """
         # if no id specified, reply to all mentions after most recent tweet by bot
         if not since_id:
@@ -202,7 +202,7 @@ class TextProcessor:
         if length < len(new_text):
             new_text = new_text[:length - 1]
             print('truncated response length to: ', len(new_text))
-            
+
         return new_text
 
     def decipher(self, text, code):
@@ -253,9 +253,8 @@ if __name__ == '__main__':
         if test_words:
             test_phrase = "".join(test_words)
             response = mybot.basic_test(test_phrase)
-            print(response)
+            print("Response test:\n", response)
         if old_resp:
-            # since_id = tweet id found after /status/ in url
             mybot.reply_all()
         if top_trend:
             mybot.trend_tweet()
